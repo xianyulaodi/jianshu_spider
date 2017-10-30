@@ -1,22 +1,106 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <h1></h1>
+    <p>Welcome to </p>
     <div class="g-wrap">
-       <h2 class="title">班级姓名</h2>  	
-       <div class="table">
-       	<dl>
-       		<dt>咸鱼老弟</dt>
-       		<dd>a022ff7e4bcd</dd>
-       	</dl>
-       </div>
+       <h2 class="title">test</h2>  
+      <table>
+        <thead>
+          <th>姓名</th>
+          <th>文章链接</th>
+          <th>字数</th>
+          <th>写作时间</th>
+        </thead>
+        <tbody id="tbody">
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>	
     </div>
   </body>
   <script src="/javascripts/jquery-1.8.3.js"></script>
   <script src="/javascripts/index.js"></script>
+  <script>
+    var data = [ { title: '深夜十则',
+      wordage: '字数 558',
+      publishTime: '2017.10.23 00:17',
+      author: '咸鱼老弟' },
+    { title: '创意思维 | 思考太多，非多数人的追求',
+      wordage: '字数 1737',
+      publishTime: '2017.10.23 07:16*',
+      author: '糕小糕' },
+    { title: '创意思维｜能回到过去的  时光机',
+      wordage: '字数 2080',
+      publishTime: '2017.10.25 07:15',
+      author: '糕小糕' },
+    { title: '读《复活》从精神的死亡走向复活',
+      wordage: '字数 1695',
+      publishTime: '2017.10.26 07:13*',
+      author: '糕小糕' },
+    { title: '读《复活》从精神的死亡走向复活',
+      wordage: '字数 1695',
+      publishTime: '2017.10.26 07:13*',
+      author: '糕小糕' },
+    { title: '创意思维｜能回到过去的  时光机',
+      wordage: '字数 2080',
+      publishTime: '2017.10.25 07:15',
+      author: '糕小糕' },
+    { title: '用户体验思维  做简书的文字排版',
+      wordage: '字数 1849',
+      publishTime: '2017.10.27 07:19*',
+      author: '糕小糕' },
+    { title: '创意思维 | 思考太多，非多数人的追求',
+      wordage: '字数 1737',
+      publishTime: '2017.10.23 07:16*',
+      author: '糕小糕' },
+    { title: '创意思维｜把现状过到  好的不愿离开',
+      wordage: '字数 2163',
+      publishTime: '2017.10.24 07:33',
+      author: '糕小糕' },
+    { title: '创意思维｜把现状过到  好的不愿离开',
+      wordage: '字数 2163',
+      publishTime: '2017.10.24 07:33',
+      author: '糕小糕' },
+    { title: '用户体验思维  做简书的文字排版',
+      wordage: '字数 1849',
+      publishTime: '2017.10.27 07:19*',
+      author: '糕小糕' },
+    { title: '深夜十则',
+      wordage: '字数 558',
+      publishTime: '2017.10.23 00:17',
+      author: '咸鱼老弟' },
+    { title: '创意思维｜把现状过到  好的不愿离开',
+      wordage: '字数 2163',
+      publishTime: '2017.10.24 07:33',
+      author: '糕小糕' },
+    { title: '创意思维 | 思考太多，非多数人的追求',
+      wordage: '字数 1737',
+      publishTime: '2017.10.23 07:16*',
+      author: '糕小糕' },
+    { title: '用户体验思维  做简书的文字排版',
+      wordage: '字数 1849',
+      publishTime: '2017.10.27 07:19*',
+      author: '糕小糕' } ];
+    var htmlArr = [];
+    data.forEach(function(item) {
+      var html=     '<tr>'+
+                      '<td>'+ item.author +'</td>'+
+                      '<td>'+ item.title +'</td>'+
+                      '<td>'+ item.wordage +'</td>'+
+                      '<td>'+ item.publishTime +'</td>'+
+                    '</tr>';  
+      htmlArr.push(html)  ;  
+    });
+    $('#tbody').html(htmlArr.join(''));
+    console.log(newData);
+  </script>
 </html>
