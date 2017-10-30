@@ -47,7 +47,7 @@ Crawler.prototype.crawlUserCenter = function() {
 	var uidList = config.data;
 	var baseUrl = this.baseUrl;
 	//异步抓取页面，控制并发为5条
-	async.mapLimit(uidList, 5, function (data, callback) {
+	async.mapLimit(uidList, 10, function (data, callback) {
 		var url = baseUrl+ '/u/'+ data.uid; 
     that.fetchUrl(url, function(html) {
 			const $ = cheerio.load(html);
@@ -101,9 +101,9 @@ Crawler.prototype.getArticleDetail = function(articleList) {
 // 命令 ep 重复监听 urls.length 次（在这里也就是 20 次） `article_data` 事件再行动,所以这里会产生重复数据
 Crawler.prototype.concurrency = function() {
 	var that = this;
-	ep.after('article_data', 15, function (resp) {
+	ep.after('article_data', 70, function (resp) {
 		var result = that.removeSame(resp);
-		console.log('最终结果：',result);
+		console.log('最终结果========================：<br />',result);
 	});
 }
 
