@@ -10,101 +10,148 @@ const eventproxy = require('eventproxy');  //流程控制
 const ep = eventproxy();
 
 router.get('/', function(req, res, next) {
-	const crawler = new Crawler();
-	crawler.init();
   res.render('index', { title: 'Express' });
 });
+
+router.post('/index', function(req, res, next) {
+	const startTime = req.body.startTime;
+	const endTime = req.body.endTime;
+	const crawler = new Crawler(res,startTime,endTime);
+	crawler.init();
+});
+
 
 // 将页面导出为 excel的文章： http://blog.csdn.net/zhudiwoaini/article/details/50847635
 
 // 爬虫构造函数
-function Crawler(res) {
+function Crawler(res,startTime,endTime) {
 	this.baseUrl = "http://www.jianshu.com";
+	this.currentCount = 0;
+	this.res = res;
+	this.errorUrls = [];
+	this.startTime = Number(startTime);
+	this.endTime = Number(endTime);
 }
 
 Crawler.prototype.init = function() {
 	this.crawlUserCenter();
-	this.concurrency();
 }
 
 // 封装 superagent 函数
 Crawler.prototype.fetchUrl = function(url,callback) {
+	var that = this;
 	superagent
     .get(url)
     .charset('utf-8')
     .end(function (err, ssres) {	 
     	if(err) {
-			  console.log('抓取【'+url+'】这个url的时候出错了');
-        return false;	    		
+        that.errorUrls.push(url);
+			  console.log('抓取【'+url+'】这个url的时候出错了');	
+			  return false;    		
     	}
     	callback(ssres.text);
     });		
 }
 
-// 爬取用户中心,数据来源于配置文件
-Crawler.prototype.crawlUserCenter = function() {
-	var that = this;
+// 获取简书用户中心的url
+Crawler.prototype.getUserCenUrls = function() {
+	var urlCollections = [];
 	var uidList = config.data;
 	var baseUrl = this.baseUrl;
+	uidList.map(function(elem,index) {
+		var url = baseUrl+ '/u/'+ elem.uid; 
+		urlCollections.push(url);
+	});
+	return urlCollections;
+}
+
+
+
+// 爬取用户中心,从中获取文章详情链接
+Crawler.prototype.crawlUserCenter = function() {
+	var that = this;
+	var urlCollections = this.getUserCenUrls();
 	//异步抓取页面，控制并发为5条
-	async.mapLimit(uidList, 10, function (data, callback) {
-		var url = baseUrl+ '/u/'+ data.uid; 
+	async.mapLimit(urlCollections, 5, function (url, callback) { 
+		that.currentCount++;
+		console.log('现在正在抓取:',url,',现在的并发数为:'+that.currentCount);
     that.fetchUrl(url, function(html) {
+    	that.currentCount--;
 			const $ = cheerio.load(html);
-  		that.getArticleLastWeek($);      	
+      var urlArr = that.getDetailUrl($);
+			callback(null,urlArr);  //callback是必须的
     });
+   // 并发结束后的结果
   }, function (err, result) {
-  	console.log('async result',result);
-  	// 爬虫结束后的回调，可以做一些统计结果
+  	that.currentCount = 0;
+  	that.getArticleDetail(result);
     return false;
   });
 }
 
-// 获取上一周写的文章链接
-Crawler.prototype.getArticleLastWeek = function($) {
-	const articleList = $('#list-container .note-list li');
-	const len = articleList.length;
-	const lastWeekArticleUrl = [];
-	for(var i = 0; i < len; i++) {
-		var crateAt = articleList.eq(i).find('.author .time').attr('data-shared-at');
-		var startTime = new Date('2017-10-23 00:00:00').getTime();
-		var endTime = new Date('2017-10-29 24:00:00').getTime();
-		var createTime = new Date(crateAt);
-		if(createTime >= startTime && createTime <= endTime) {
-			var articleUrl = articleList.eq(i).find('.title').attr('href');
-			lastWeekArticleUrl.push(articleUrl);
+function getDetailUrls(urls) {
+	var urlCollections = [];
+	for(var i = 0; i < urls.length; i++) {
+		var urlArr = urls[i];
+		for(var k = 0; k < urlArr.length;k++) {
+			var url = urlArr[k];
+			urlCollections.push(url);
 		}
 	}
-	this.getArticleDetail(lastWeekArticleUrl);
+	return urlCollections;
+}
+
+// 获取上一周写的文章链接
+Crawler.prototype.getDetailUrl = function($) {
+	const articleList = $('#list-container .note-list li');
+	const len = articleList.length;
+	const urlCollections = [];
+	const startTime = this.startTime;
+	const endTime = this.endTime;
+	const baseUrl = this.baseUrl;
+	for(var i = 0; i < len; i++) {
+		var crateAt = articleList.eq(i).find('.author .time').attr('data-shared-at');
+		var createTime = new Date(crateAt).getTime();
+		if(createTime >= startTime && createTime <= endTime) {
+			var articleUrl = articleList.eq(i).find('.title').attr('href');
+      var url = baseUrl + articleUrl;
+			urlCollections.push(url);
+		}
+	}
+	return urlCollections;
 }
 
 // 获取文章详情
 Crawler.prototype.getArticleDetail = function(articleList) {
 	var baseUrl = this.baseUrl;
+	var urlCollections = getDetailUrls(articleList);
 	var that = this;
 	// 获取所有的文章详情页的信息
-	articleList.forEach(function(item) {
-		var url = baseUrl + item;
-		that.fetchUrl(url, function(html) {
-				const $ = cheerio.load(html,{decodeEntities: false});
-				const data = {
+	async.mapLimit(urlCollections, 5, function(url, callback) { 
+		that.currentCount ++;
+		console.log('现在正在抓取:',url,'现在的并发数为:' +that.currentCount);
+    that.fetchUrl(url, function(html) {
+    	const $ = cheerio.load(html,{decodeEntities: false});
+	    const  data = {
 	    		title: $('.article .title').html(),
 	    		wordage: $('.article .wordage').html(),
 	    		publishTime: $('.article .publish-time').html(),
 	    		author: $('.author .name a').html()
-	    	};
-      	ep.emit('article_data', data);			
-    });		
+	    	}; 
+	    that.currentCount --;
+			callback(null,data);  //callback是必须的
+			
+    });
+   // 并发结束后的结构
+  }, function (err, result) {
+  	var result = that.removeSame(result);
+  	that.res.json({
+  		data: result
+  	});
+  	console.log('抓取数据完毕，一共抓取了：'+ result.length +'篇文章');
+  	// 爬虫结束后的回调，可以做一些统计结果
+    return false;
   });
-}
-
-// 命令 ep 重复监听 urls.length 次（在这里也就是 20 次） `article_data` 事件再行动,所以这里会产生重复数据
-Crawler.prototype.concurrency = function() {
-	var that = this;
-	ep.after('article_data', 70, function (resp) {
-		var result = that.removeSame(resp);
-		console.log('最终结果========================：<br />',result);
-	});
 }
 
 Crawler.prototype.removeSame = function(arr) {

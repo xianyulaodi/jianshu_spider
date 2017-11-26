@@ -6,3 +6,89 @@ body {
 a {
   color: #00B7FF;
 }
+
+td {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+.form-group {
+	margin-bottom: 10px;
+}
+.submit {
+	width: 100px;
+	height: 30px;
+	line-height: 30px;
+	border-radius: 5px;
+	font-size: 14px;
+	color: #fff;
+	text-align: center;
+	background: blue;
+	cursor: pointer;
+}
+.g-wrap {
+	overflow: hidden;
+}
+.table1,.table2 {
+	float: left;
+}
+.table2 {
+	margin-left: 30px;
+}
+.mask {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 2;
+	background: rgba(0,0,0,.5);
+}
+.loading{
+    width: 80px;
+    height: 40px;
+    margin: 0 auto;
+    z-index: 3;
+    top: 200px;
+    position: fixed;
+    left: 50%;
+    margin-left: -40px;
+}
+.loading-wrap {
+	display: none;
+}
+.loading-wrap.active{
+	display: block;
+}
+.loading span{
+    display: inline-block;
+    width: 8px;
+    height: 100%;
+    border-radius: 4px;
+    background: lightgreen;
+    -webkit-animation: load 1s ease infinite;
+}
+@-webkit-keyframes load{
+    0%,100%{
+        height: 40px;
+        background: lightgreen;
+    }
+    50%{
+        height: 70px;
+        margin: -15px 0;
+        background: lightblue;
+    }
+}
+.loading span:nth-child(2){
+    -webkit-animation-delay:0.2s;
+}
+.loading span:nth-child(3){
+    -webkit-animation-delay:0.4s;
+}
+.loading span:nth-child(4){
+    -webkit-animation-delay:0.6s;
+}
+.loading span:nth-child(5){
+    -webkit-animation-delay:0.8s;
+}
