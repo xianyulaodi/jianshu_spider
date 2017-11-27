@@ -137,12 +137,12 @@ Crawler.prototype.crawArticleDetail = function(articleList) {
    
   }, function (err, result) {
   	var result = that.removeSame(result);
-  	var numArr = that.makeArticleNum(result);
+  	var sumUpData = that.sumUpResult(result);
   	that.res.json({
   		data: result,
-  		numArr: numArr
+  		sumUpData: sumUpData
   	});
-  	that.createExcel(result,numArr);
+  	that.createExcel(result,sumUpData);
   	console.log('抓取数据完毕，一共抓取了：'+ result.length +'篇文章');
   	
     return false;
@@ -152,7 +152,7 @@ Crawler.prototype.crawArticleDetail = function(articleList) {
 /**
 [{ name: '咸鱼老弟', num: 2, wordageNum: 3700 }]
 **/
-Crawler.prototype.makeArticleNum = function(dataArr) {
+Crawler.prototype.sumUpResult = function(dataArr) {
 	var obj = {};
 	var arr = [];
   dataArr.forEach(function(item,index) {
@@ -175,13 +175,13 @@ Crawler.prototype.makeArticleNum = function(dataArr) {
 }
 
 // 生成excel表
-Crawler.prototype.createExcel = function(dataArr,numArr) {
+Crawler.prototype.createExcel = function(dataArr,sumUpData) {
 	const exlBuf = fs.readFileSync(config.excelFile.path + "/report.xlsx");
 	//数据源
 	var data = [ 
 	   [{"table_name":"7班简书统计表","date": new Date()}],
 	   dataArr,
-	   numArr
+	   sumUpData
 	];
 	//用数据源(对象)data渲染Excel模板
 	ejsExcel.renderExcel(exlBuf, data)
