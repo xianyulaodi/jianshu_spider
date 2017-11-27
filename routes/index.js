@@ -16,9 +16,9 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/index', function(req, res, next) {
-	const startTime = req.body.startTime;
-	const endTime = req.body.endTime;
-	const crawler = new Crawler(res,startTime,endTime);
+	const startTime = Number(req.body.startTime),
+	      endTime = Number(req.body.endTime),
+	      crawler = new Crawler(res,startTime,endTime);
 	crawler.init();
 });
 
@@ -31,8 +31,8 @@ function Crawler(res,startTime,endTime) {
 	this.currentCount = 0;
 	this.res = res;
 	this.errorUrls = [];
-	this.startTime = Number(startTime);
-	this.endTime = Number(endTime);
+	this.startTime = startTime;
+	this.endTime = endTime;
 }
 
 Crawler.prototype.init = function() {
@@ -48,31 +48,19 @@ Crawler.prototype.fetchUrl = function(url,callback) {
     .end(function (err, ssres) {	 
     	if(err) {
         that.errorUrls.push(url);
-			  console.log('抓取【'+url+'】这个url的时候出错了');	
+			  console.log('抓取【'+ url +'】出错');	
 			  return false;    		
     	}
     	callback(ssres.text);
     });		
 }
 
-// 获取简书用户中心的url
-Crawler.prototype.resetUserCenUrl = function() {
-	var urlCollections = [];
-	var uidList = config.data;
-	var baseUrl = this.baseUrl;
-	uidList.map(function(elem,index) {
-		var url = baseUrl+ '/u/'+ elem.uid; 
-		urlCollections.push(url);
-	});
-	return urlCollections;
-}
-
-
 // 爬取用户中心,从中获取文章详情链接, 异步抓取，控制并发为5条
 Crawler.prototype.crawlUserCenter = function() {
 	var that = this;
-	var urlCollections = this.resetUserCenUrl();
-	async.mapLimit(urlCollections, 5, function (url, callback) { 
+	var centerUrlArr = config.data;
+	async.mapLimit(centerUrlArr, 5, function (elem, callback) { 
+		const url = elem.url;
 		that.currentCount++;
 		console.log('现在正在抓取:',url,',现在的并发数为:'+that.currentCount);
     that.fetchUrl(url, function(html) {
@@ -130,9 +118,12 @@ Crawler.prototype.crawArticleDetail = function(articleList) {
 	// 获取所有的文章详情页的信息
 	async.mapLimit(urlCollections, 5, function(url, callback) { 
 		that.currentCount ++;
+		var fetchStart = new Date().getTime();
 		console.log('现在正在抓取:',url,'现在的并发数为:' +that.currentCount);
     that.fetchUrl(url, function(html) {
     	const $ = cheerio.load(html,{decodeEntities: false});
+    	var time = new Date().getTime() - fetchStart;
+    	console.log("耗时：" +time);
 	    const  data = {
 	    		title: $('.article .title').html(),
 	    		wordage: $('.article .wordage').html(),
@@ -153,7 +144,7 @@ Crawler.prototype.crawArticleDetail = function(articleList) {
   	});
   	that.createExcel(result,numArr);
   	console.log('抓取数据完毕，一共抓取了：'+ result.length +'篇文章');
-  	// 爬虫结束后的回调，可以做一些统计结果
+  	
     return false;
   });
 }
@@ -193,11 +184,12 @@ Crawler.prototype.createExcel = function(dataArr,numArr) {
 	   numArr
 	];
 	//用数据源(对象)data渲染Excel模板
-	ejsExcel.renderExcel(exlBuf, data).then(function(exlBuf2){
-		fs.writeFileSync(config.excelFile.path + "/report2.xlsx", exlBuf2);
-		console.log("生成report2.xlsx");
+	ejsExcel.renderExcel(exlBuf, data)
+	.then(function(exlBuf2) {
+			fs.writeFileSync(config.excelFile.path + "/report2.xlsx", exlBuf2);
+			console.log("生成excel表成功");
 	}).catch(function(err) {
-		console.error(err);
+			console.error(err);
 	});
 }
 
