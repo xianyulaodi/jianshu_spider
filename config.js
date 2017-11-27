@@ -1,10 +1,14 @@
+const path = require('path');
 // 配置文件
 module.exports = {
+  excelFile: {
+ 		path: path.join(__dirname, 'public/excel/')
+ 	},	
 	data: [
 		{name:"1凤凰磐石",uid:"bc551309edf1"},
 		{name:"2花京体验",uid:"7654365ac9e5"},
 		{name:"3夏大耳朵",uid:"d582362d6bef"},
-		{name:"4御前带枪刺客",uid:"af7eebec5ba7"},
+	/**	{name:"4御前带枪刺客",uid:"af7eebec5ba7"},
 		{name:"5临溪为砚",uid:"7629d45a7121"},
 		{name:"6Lilydancing",uid:"e4226643765d"},
 		{name:"7陌上尘兮",uid:"351d2f0a554b"},
@@ -21,7 +25,7 @@ module.exports = {
 		{name:"18泡芙甜",uid:"0d94b1f1ee04"},
 		{name:"19Dear酱子",uid:"3a6854e6f61c"},
 		{name:"20苏小逃",uid:"6985905da3d0"},
-/**
+
 		{name:"21彭小说",uid:"aab46ea02e66"},
 		{name:"22林西燃",uid:"4f0a716356da"},
 		{name:"23洪一念",uid:"113e982806e1"},

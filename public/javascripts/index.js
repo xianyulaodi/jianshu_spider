@@ -5,12 +5,8 @@ var index = (function(win,$) {
   function sendAjax() {
     var startTime = $('#startTime').val();
     var endTime = $('#endTime').val();
-    if(!startTime) {
-      alert('请选择开始时间');
-      return false;
-    }
-    if(!endTime) {
-      alert('请选择结束时间');
+    if(!startTime || !endTime) {
+      alert('开始时间和结束时间都需要选择');
       return false;
     }
     startTime = new Date(startTime).setHours(0);

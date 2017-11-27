@@ -17,9 +17,10 @@
   "devDependencies": {
     "async": "^2.5.0",
     "cheerio": "^0.22.0",
+    "ejsexcel": "^3.4.9",
     "eventproxy": "^1.0.0",
     "request": "^2.83.0",
     "superagent": "^3.6.3",
     "superagent-charset": "^1.2.0"
-  }  
+  }
 }
