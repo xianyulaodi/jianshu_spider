@@ -1,7 +1,7 @@
 
+ // https://github.com/sail-sail/ejsExcel   excel表格
 
 var index = (function(win,$) {
- // https://github.com/sail-sail/ejsExcel   excel表格
   function sendAjax() {
     var startTime = $('#startTime').val();
     var endTime = $('#endTime').val();
@@ -27,57 +27,39 @@ var index = (function(win,$) {
         $('#loading').show();
       },
       success : function(res) {
-        render(res.data);
-        console.log(res);
+        render(res.data,res.sumUpData);
       },
-     error:function(error){
+      error:function(error){
         $('#loading').hide();
         alert('出错了，请刷新后重试');
-     }
+      }
     });      
   }
   
-  function render(data) {
+  function render(data,sumUpData) {
     $('#loading').hide();
     var htmlArr = [];
-    var collectionHtml = [];
-    var obj = {};
-    data.forEach(function(item,index) {
-      var author = item.author;
-      var wordage = item.wordage.match(/\d+/g)[0];
-      if(obj[author]) {
-        obj[author].push(wordage);
-      } else {
-        obj[author] = [wordage];
-      }
-    });
-
-    for(k in obj) {
-      var arr = obj[k];
-      var num = 0;
-      arr.forEach(function(item) {
-        num += parseInt(item);
-      });
-      var html=     '<tr>'+
-                    '<td>'+ k +'</td>'+
-                    '<td>'+ obj[k].length +'</td>'+
-                    '<td>'+ num +'</td>'+
-                  '</tr>';
-      collectionHtml.push(html);
-    }
-    $('#tbody2').html(collectionHtml.join(''));
-
+    var sumUpHtml = [];
     data.forEach(function(item,index) {
       var html=  '<tr>'+
-                    '<td>'+ index +'</td>'+
+                    '<td>'+ (index+1) +'</td>'+
                     '<td>'+ item.author +'</td>'+
                     '<td>'+ item.title +'</td>'+
                     '<td>'+ item.wordage +'</td>'+
                     '<td>'+ item.publishTime +'</td>'+
                   '</tr>';  
       htmlArr.push(html)  ;  
-    });
+    });    
+    sumUpData.forEach(function(item,index) {
+      var html=  '<tr>'+
+                    '<td>'+ item.name +'</td>'+
+                    '<td>'+ item.num +'</td>'+
+                    '<td>'+ item.wordageNum +'</td>'+
+                  '</tr>';  
+      sumUpHtml.push(html);  
+    });    
     $('#tbody').html(htmlArr.join(''));
+    $('#tbody2').html(sumUpHtml.join(''));
   }
 
 
