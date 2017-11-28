@@ -167,7 +167,7 @@ const crawler = (function() {
   const createExcel = (dataArr,sumUpData) => {
 		const exlBuf = fs.readFileSync(config.excelFile.path + "/report.xlsx");
 		//数据源
-		const data = [ [{"table_name":"7班简书统计表","date": new Date()}], dataArr, sumUpData ];
+		const data = [ [{"table_name":"7班简书统计表","date": formatTime()}], dataArr, sumUpData ];
 		//用数据源(对象)data渲染Excel模板
 		ejsExcel.renderExcel(exlBuf, data)
 		.then(function(exlBuf2) {
@@ -176,6 +176,16 @@ const crawler = (function() {
 		}).catch(function(err) {
 				console.error('生成excel表失败');
 		});
+  }
+
+  const formatTime = () => {
+    let timestamp = new Date();
+    let y = timestamp.getFullYear();
+    let mon = timestamp.getMonth() +1;
+    let day = timestamp.getDate();
+    mon = Number(mon) > 10 ? mon : '0'+mon;
+    day = Number(mon) > 10 ? day : '0'+day;
+    return y +'-' + mon + '-' + day; 
   }
 
 

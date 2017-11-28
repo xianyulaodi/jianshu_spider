@@ -25,6 +25,7 @@ var index = (function(win,$) {
       dataType: 'json',
       beforeSend: function() {
         $('#loading').show();
+        $('#content').hide();
       },
       success : function(res) {
         render(res.data,res.sumUpData);
@@ -38,6 +39,7 @@ var index = (function(win,$) {
   
   function render(data,sumUpData) {
     $('#loading').hide();
+    $('#content').show();
     var htmlArr = [];
     var sumUpHtml = [];
     data.forEach(function(item,index) {

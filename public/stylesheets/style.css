@@ -27,12 +27,23 @@ td {
 }
 .g-wrap {
 	overflow: hidden;
+    display: none;
+}
+.table1 {
+    border-right: 1px solid #ccc;
+    padding-right: 20px;
 }
 .table1,.table2 {
 	float: left;
 }
 .table2 {
 	margin-left: 30px;
+}
+.load-btn {
+    display: block;
+    font-size: 16px;
+    margin-top: 20px;
+    text-decoration: none;
 }
 .mask {
 	width: 100%;
