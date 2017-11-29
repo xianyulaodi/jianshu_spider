@@ -16,7 +16,7 @@ var index = (function(win,$) {
     endTime = new Date(endTime).setMinutes(59);
     endTime = new Date(endTime).setSeconds(59);
     $.ajax({
-      url : '/index',
+      url : '/spider',
       type: 'post',
       data: {
         startTime: startTime,
@@ -68,7 +68,5 @@ var index = (function(win,$) {
   $('#submit').click(function() {
     sendAjax();
   });
-      		  
-
-
+    
 })(window,jQuery)
