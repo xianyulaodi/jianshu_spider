@@ -128,10 +128,9 @@ const crawler = (function() {
 
   // 数组去重
 	const removeSame = (arr) => {
-		let arr2 = arr;
 		const newArr = [];
 		const obj = {};
-		arr2.forEach((item) => {
+		arr.forEach((item) => {
 	    if(!obj[item.title]) {
 	      newArr.push(item);
 	      obj[item.title] = item.title;
