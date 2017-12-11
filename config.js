@@ -23,7 +23,7 @@ module.exports = {
 		{name:"16南社后生",url:"http://www.jianshu.com/u/941fdfba861d"},
 		{name:"17风飘絮语",url:"http://www.jianshu.com/u/6d818534cfde"},
 		{name:"18泡芙甜",url:"http://www.jianshu.com/u/0d94b1f1ee04"},
-		{name:"19Dear酱子",url:"http://www.jianshu.com/u/3a6854e6f61c"},
+		{name:"19Dear酱子",url:"http://www.jianshu.com/u/b4dd8b9b4c01"},
 		{name:"20苏小逃",url:"http://www.jianshu.com/u/6985905da3d0"},
 		{name:"21彭小说",url:"http://www.jianshu.com/u/aab46ea02e66"},
 		{name:"22林西燃",url:"http://www.jianshu.com/u/4f0a716356da"},
